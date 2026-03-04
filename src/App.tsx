@@ -133,23 +133,33 @@ const Card = ({
       onClick={isPlayable ? onClick : undefined}
       style={style}
       className={`
-        w-16 h-24 sm:w-24 sm:h-36 bg-white rounded-lg border border-slate-200 flex flex-col p-1 sm:p-2 card-shadow relative cursor-default
+        w-16 h-24 sm:w-24 sm:h-36 bg-white rounded-lg border border-slate-200 flex flex-col p-1 sm:p-2 card-shadow relative cursor-default overflow-hidden
         ${isPlayable ? 'cursor-pointer ring-2 ring-yellow-400 ring-offset-2 ring-offset-emerald-900' : ''}
         ${className}
       `}
     >
-      <div className={`text-xs sm:text-lg font-bold leading-none ${SUIT_COLORS[card.suit]}`}>
+      {/* Nezha Image Background */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <img 
+          src="https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=300&q=80" 
+          alt="Nezha" 
+          className="w-full h-full object-cover"
+          referrerPolicy="no-referrer"
+        />
+      </div>
+
+      <div className={`text-xs sm:text-lg font-bold leading-none z-10 ${SUIT_COLORS[card.suit]}`}>
         {card.rank}
       </div>
-      <div className={`text-xs sm:text-lg leading-none ${SUIT_COLORS[card.suit]}`}>
+      <div className={`text-xs sm:text-lg leading-none z-10 ${SUIT_COLORS[card.suit]}`}>
         {SUIT_SYMBOLS[card.suit]}
       </div>
       
-      <div className={`absolute inset-0 flex items-center justify-center text-2xl sm:text-5xl opacity-80 ${SUIT_COLORS[card.suit]}`}>
+      <div className={`absolute inset-0 flex items-center justify-center text-2xl sm:text-5xl opacity-40 z-0 ${SUIT_COLORS[card.suit]}`}>
         {SUIT_SYMBOLS[card.suit]}
       </div>
 
-      <div className={`absolute bottom-1 right-1 sm:bottom-2 sm:right-2 text-xs sm:text-lg font-bold leading-none rotate-180 ${SUIT_COLORS[card.suit]}`}>
+      <div className={`absolute bottom-1 right-1 sm:bottom-2 sm:right-2 text-xs sm:text-lg font-bold leading-none rotate-180 z-10 ${SUIT_COLORS[card.suit]}`}>
         <div className="flex flex-col items-end">
           <span>{card.rank}</span>
           <span>{SUIT_SYMBOLS[card.suit]}</span>
@@ -340,32 +350,17 @@ export default function App() {
     <div className="h-screen w-full flex flex-col felt-texture font-sans">
       {/* Header */}
       <header className="p-4 flex items-center justify-between bg-black/20 backdrop-blur-md border-b border-white/10">
-        {/* Top Left: Opponent Avatar */}
-        <PlayerAvatar 
-          type="ai" 
-          playedCount={aiPlayCount} 
-          remainingCount={aiHand.length} 
-          isTurn={currentTurn === 'ai'} 
-        />
-
-        {/* Center: Game Title (Responsive) */}
-        <div className="hidden md:flex flex-col items-center">
-          <div className="w-12 h-12 bg-yellow-500 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-500/20 mb-2">
-            <Trophy className="text-emerald-900 w-7 h-7" />
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-500/20">
+            <Trophy className="text-emerald-900 w-6 h-6" />
           </div>
-          <h1 className="text-xl font-display font-bold tracking-tight text-white">GG 疯狂 8 点</h1>
-          <p className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">标准规则 • 万能 8 点</p>
+          <div>
+            <h1 className="text-xl font-display font-bold tracking-tight text-white">GG 疯狂 8 点</h1>
+            <p className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">标准规则 • 万能 8 点</p>
+          </div>
         </div>
 
-        {/* Top Right: My Avatar + Reset */}
-        <div className="flex items-center gap-4 sm:gap-8">
-          <PlayerAvatar 
-            type="player" 
-            playedCount={playerPlayCount} 
-            remainingCount={playerHand.length} 
-            isTurn={currentTurn === 'player'} 
-          />
-          
+        <div className="flex items-center gap-4">
           <button 
             onClick={initGame}
             className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 transition-all text-white/60 hover:text-white group"
@@ -402,13 +397,27 @@ export default function App() {
           </div>
         ) : (
           <>
-            {/* AI Hand */}
-            <div className="w-full flex justify-center">
+            {/* AI Hand Section with Avatars on sides */}
+            <div className="w-full flex items-center justify-center gap-4 sm:gap-12 lg:gap-24">
+              <PlayerAvatar 
+                type="ai" 
+                playedCount={aiPlayCount} 
+                remainingCount={aiHand.length} 
+                isTurn={currentTurn === 'ai'} 
+              />
+              
               <div className="flex -space-x-8 sm:-space-x-12">
                 {aiHand.map((_, i) => (
                   <Card key={`ai-${i}`} isFaceUp={false} className="rotate-180" />
                 ))}
               </div>
+
+              <PlayerAvatar 
+                type="player" 
+                playedCount={playerPlayCount} 
+                remainingCount={playerHand.length} 
+                isTurn={currentTurn === 'player'} 
+              />
             </div>
 
             {/* Center Area */}
