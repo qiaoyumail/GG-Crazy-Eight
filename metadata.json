@@ -1,0 +1,5 @@
+{
+  "name": "GG 疯狂 8 点",
+  "description": "一款使用 React 和 Tailwind CSS 构建的高性能、响应式疯狂 8 点纸牌游戏。",
+  "requestFramePermissions": []
+}
